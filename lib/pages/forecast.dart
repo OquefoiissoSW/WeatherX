@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:weather_x/models/conditions_map.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:weather_x/models/maps.dart';
 import 'package:weather_x/models/weather_model.dart';
 import 'package:weather_x/services/weather_service.dart';
 
@@ -22,9 +22,7 @@ class _ForecastPageState extends State<ForecastPage> {
         _weather = weather;
         print(weather.temperatureC.toString());
       });
-    }
-
-    catch(e) {
+    } catch (e) {
       print(e);
     }
   }
@@ -38,68 +36,132 @@ class _ForecastPageState extends State<ForecastPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
-      body: ListView(
-        children: [
-          _currentWeatherSection(),
-        ],
-      )
-    );
+        appBar: appBar(),
+        body: ListView(
+          children: [
+            _currentWeatherSection(),
+          ],
+        ));
   }
 
-  Column _currentWeatherSection(){
+  Column _currentWeatherSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.only(left:20),
+          padding: EdgeInsets.only(left: 20, bottom: 5),
           child: Text(
             'Прямо сейчас',
             style: TextStyle(
-                color: Colors.black,
-                fontSize: 32,
-                fontWeight: FontWeight.bold
-            ),
+                color: Colors.black, fontSize: 32, fontWeight: FontWeight.bold),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left:21),
-          child: Text(
-            '${conditions[_weather?.condition]}',
-            style: const TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold
-            ),
+        CarouselSlider(items: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 21),
+                child: Text(
+                  '${conditions[_weather?.condition]}',
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.asset(
+                      'assets/icons/condition/condition_${_weather?.condition.toLowerCase().replaceAll(RegExp(' '), '_')}.png',
+                      height: 120,
+                      width: 120,
+                    ),
+                  ),
+                  Text(
+                    '${_weather?.temperatureC.toString()}°C',
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              )
+            ],
           ),
-        ),
-        const SizedBox(height: 15,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Image.asset(
-                'assets/icons/condition/condition_${_weather?.condition.toLowerCase().replaceAll(RegExp(' '), '_')}.png',
-                height: 120,
-                width: 120,
-              ),
+          Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/icons/wind_speed.png',
+                      height: 32,
+                      width: 32,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 5),
+                    ),
+                    Text(
+                      'Скорость ветра ${_weather?.wind_speed}км/ч c ${directions[_weather?.wind_direction]}а',
+                      style: const TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/icons/humidity.png',
+                      height: 32,
+                      width: 32,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 5),
+                    ),
+                    Text(
+                      'Влажность ${_weather?.humidity}%',
+                      style: const TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/icons/pressure.png',
+                      height: 32,
+                      width: 32,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 5),
+                    ),
+                    Text(
+                      'Давление ${(_weather!.pressure * 0.7506).round()}мм. рт. ст',
+                      style: const TextStyle(fontSize: 18),
+                    )
+                  ],
+                )
+              ],
             ),
-            Text(
-              '${_weather?.temperatureC.toString()}°C',
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold
-              ),
-            )
-          ],
-        )
+          )
+        ], options: CarouselOptions(viewportFraction: 1)),
       ],
     );
   }
 
-  AppBar appBar(){
+  AppBar appBar() {
     return AppBar(
         title: const Text(
           'Russia, Omsk',
@@ -117,8 +179,6 @@ class _ForecastPageState extends State<ForecastPage> {
               thickness: 2,
               indent: 20,
               endIndent: 20,
-            )
-        )
-    );
+            )));
   }
 }

@@ -9,3 +9,10 @@ final Map<String, String> conditions = {
   "Mist" : "Туман",
   "Patchy rain possible" : "Возможен кратковременный дождь"
 };
+
+final Map<String, String> directions = {
+  "S" : "Юг",
+  "N" : "Север",
+  "W" : "Запад",
+  "E" : "Восток"
+};
