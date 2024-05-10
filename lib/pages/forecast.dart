@@ -62,6 +62,17 @@ class _ForecastPageState extends State<ForecastPage> {
             ),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.only(left:21),
+          child: Text(
+            '${conditions[_weather?.condition]}',
+            style: const TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
         const SizedBox(height: 15,),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -69,9 +80,9 @@ class _ForecastPageState extends State<ForecastPage> {
             Padding(
               padding: EdgeInsets.all(20),
               child: Image.asset(
-                'assets/icons/condition_icon_${conditions["Sunny"]}.png',
-                height: 150,
-                width: 150,
+                'assets/icons/condition/condition_${_weather?.condition.toLowerCase().replaceAll(RegExp(' '), '_')}.png',
+                height: 120,
+                width: 120,
               ),
             ),
             Text(

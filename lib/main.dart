@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_x/pages/forecast.dart';
 
 void main() {
+  print('assets/icons/condition/condition_${"Thundery outbreaks possible".toLowerCase().replaceAll(RegExp(' '), '_')}.png');
   runApp(const MyApp());
 }
 
