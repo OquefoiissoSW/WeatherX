@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:weather_x/models/conditions_map.dart';
 import 'package:weather_x/models/weather_model.dart';
 import 'package:weather_x/services/weather_service.dart';
 
@@ -65,10 +66,13 @@ class _ForecastPageState extends State<ForecastPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SvgPicture.asset(
-              'assets/icons/condition_icon_1.svg',
-              height: 64,
-              width: 64,
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Image.asset(
+                'assets/icons/condition_icon_${conditions["Sunny"]}.png',
+                height: 150,
+                width: 150,
+              ),
             ),
             Text(
               '${_weather?.temperatureC.toString()}°C',
