@@ -8,39 +8,49 @@ import 'package:weather_x/services/weather_service.dart';
 import 'dart:math' as math;
 
 class ForecastPage extends StatefulWidget {
-  const ForecastPage({super.key});
+  final Weather weather;
+  final DayForecast dayForecast;
+  final DayForecast weekForecast;
+
+  const ForecastPage({
+    super.key,
+    required this.weather,
+    required this.dayForecast,
+    required this.weekForecast
+  });
 
   @override
   State<StatefulWidget> createState() => _ForecastPageState();
 }
 
 class _ForecastPageState extends State<ForecastPage> {
-  final _weatherService = WeatherService('8dd69690f06a475c9d4120011240905');
-  Weather? _weather;
-  DayForecast? _dayForecast;
-  DayForecast? _weekForecast;
+  // final _weatherService = WeatherService('8dd69690f06a475c9d4120011240905');
+  // Weather? _weather;
+  // DayForecast? _dayForecast;
+  // DayForecast? _weekForecast;
+  // RegExp dirExp = RegExp(r"[^А-Я]+");
+  //
+  // _fetchWeather() async {
+  //   try {
+  //     String cityName = await _weatherService.getCurrentCity();
+  //     final weather = await _weatherService.getCurrentWeather(cityName);
+  //     final dayForecast = await _weatherService.getDayForecast(cityName, 1);
+  //     final weekForecast = await _weatherService.getDayForecast(cityName, 7);
+  //     setState(() {
+  //       _weather = weather;
+  //       _dayForecast = dayForecast;
+  //       _weekForecast = weekForecast;
+  //     });
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
   RegExp dirExp = RegExp(r"[^А-Я]+");
-
-  _fetchWeather() async {
-    try {
-      String cityName = await _weatherService.getCurrentCity();
-      final weather = await _weatherService.getCurrentWeather(cityName);
-      final dayForecast = await _weatherService.getDayForecast(cityName, 1);
-      final weekForecast = await _weatherService.getDayForecast(cityName, 7);
-      setState(() {
-        _weather = weather;
-        _dayForecast = dayForecast;
-        _weekForecast = weekForecast;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    _fetchWeather();
+    //_fetchWeather();
   }
 
   @override
@@ -75,7 +85,7 @@ class _ForecastPageState extends State<ForecastPage> {
               Padding(
                 padding: EdgeInsets.only(left: 21),
                 child: Text(
-                  '${conditions[_weather?.condition]}',
+                  '${conditions[widget.weather.condition]}',
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 24,
@@ -91,13 +101,13 @@ class _ForecastPageState extends State<ForecastPage> {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Image.asset(
-                      'assets/icons/condition/condition_${_weather?.condition.toLowerCase().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
+                      'assets/icons/condition/condition_${widget.weather.condition.toLowerCase().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
                       height: 120,
                       width: 120,
                     ),
                   ),
                   Text(
-                    '${_weather?.temperatureC.toString()}°C',
+                    '${widget.weather.temperatureC.toString()}°C',
                     style: const TextStyle(
                         color: Colors.black,
                         fontSize: 40,
@@ -130,7 +140,7 @@ class _ForecastPageState extends State<ForecastPage> {
                       padding: EdgeInsets.only(left: 5),
                     ),
                     Text(
-                      'Скорость ветра ${((_weather?.wind_speed ?? 0) / 3.6).toStringAsFixed(2)}м/с',
+                      'Скорость ветра ${((widget.weather.wind_speed ?? 0) / 3.6).toStringAsFixed(2)}м/с',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -157,7 +167,7 @@ class _ForecastPageState extends State<ForecastPage> {
                       padding: EdgeInsets.only(left: 5),
                     ),
                     Text(
-                      'В направлении ${directions[_weather?.wind_direction]}',
+                      'В направлении ${directions[widget.weather.wind_direction]}',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -184,7 +194,7 @@ class _ForecastPageState extends State<ForecastPage> {
                       padding: EdgeInsets.only(left: 5),
                     ),
                     Text(
-                      'Влажность ${_weather?.humidity}%',
+                      'Влажность ${widget.weather.humidity}%',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -211,7 +221,7 @@ class _ForecastPageState extends State<ForecastPage> {
                       padding: EdgeInsets.only(left: 5),
                     ),
                     Text(
-                      'Давление ${((_weather?.pressure ?? 0) * 0.7506).round()}мм. рт. ст',
+                      'Давление ${((widget.weather.pressure ?? 0) * 0.7506).round()}мм. рт. ст',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -253,18 +263,18 @@ class _ForecastPageState extends State<ForecastPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${_dayForecast?.forecastsByHour[0]['hour'][index * 3]['temp_c']}°C',
+                          '${widget.dayForecast.forecastsByHour[0]['hour'][index * 3]['temp_c']}°C',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         Image.asset(
-                          'assets/icons/condition/condition_${_dayForecast?.forecastsByHour[0]['hour'][index * 3]["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
+                          'assets/icons/condition/condition_${widget.dayForecast.forecastsByHour[0]['hour'][index * 3]["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
                           height: 25,
                           width: 25,
                           color: Colors.white,
                         ),
                         Transform.rotate(
                           angle: (directionsAngle[
-                                      _dayForecast?.forecastsByHour[0]['hour']
+                          widget.dayForecast.forecastsByHour[0]['hour']
                                           [index * 3]['wind_dir']] ??
                                   0) *
                               math.pi /
@@ -275,12 +285,12 @@ class _ForecastPageState extends State<ForecastPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                                '${((_dayForecast?.forecastsByHour[0]['hour'][index * 3]['wind_kph'] ?? 0) / 3.6).toStringAsFixed(2)}'),
+                                '${((widget.dayForecast.forecastsByHour[0]['hour'][index * 3]['wind_kph'] ?? 0) / 3.6).toStringAsFixed(2)}'),
                             const SizedBox(
                               width: 5,
                             ),
                             Text(
-                                '${directions[_dayForecast?.forecastsByHour[0]['hour'][index * 3]['wind_dir']]?.replaceAll(dirExp, '')}')
+                                '${directions[widget.dayForecast.forecastsByHour[0]['hour'][index * 3]['wind_dir']]?.replaceAll(dirExp, '')}')
                           ],
                         )
                       ],
@@ -330,21 +340,21 @@ class _ForecastPageState extends State<ForecastPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${_weekForecast?.forecastsByHour[index]['day']['maxtemp_c']}°C',
+                          '${widget.weekForecast.forecastsByHour[index]['day']['maxtemp_c']}°C',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         Image.asset(
-                          'assets/icons/condition/condition_${_weekForecast?.forecastsByHour[index]['day']["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
+                          'assets/icons/condition/condition_${widget.weekForecast.forecastsByHour[index]['day']["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
                           height: 25,
                           width: 25,
                           color: Colors.white,
                         ),
                         Text(
-                          '${_weekForecast?.forecastsByHour[index]['day']['mintemp_c']}°C',
-                          style: TextStyle(color: Colors.black, fontSize: 18),
+                          '${widget.weekForecast.forecastsByHour[index]['day']['mintemp_c']}°C',
+                          style: const TextStyle(color: Colors.black, fontSize: 18),
                         ),
                         Text(
-                            '${((_weekForecast?.forecastsByHour[index]['day']['maxwind_kph'] ?? 0) / 3.6).toStringAsFixed(2)}м/c'
+                            '${((widget.weekForecast.forecastsByHour[index]['day']['maxwind_kph'] ?? 0) / 3.6).toStringAsFixed(2)}м/c'
                         ),
                       ],
                     ),
@@ -366,7 +376,7 @@ class _ForecastPageState extends State<ForecastPage> {
   AppBar appBar() {
     return AppBar(
         title: Text(
-          ('${_weather?.cityName ?? ""}, ${_weather?.countryName ?? "loading city.."}'),
+          ('${widget.weather.cityName ?? ""}, ${widget.weather.countryName ?? "loading city.."}'),
           style: const TextStyle(
             color: Colors.orangeAccent,
             fontSize: 24,

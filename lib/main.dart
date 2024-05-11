@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_x/pages/forecast.dart';
+import 'package:weather_x/pages/loading.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ForecastPage()
+      home: LoadingPage()
     );
   }
 }
