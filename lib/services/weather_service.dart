@@ -23,23 +23,12 @@ class WeatherService {
     }
   }
 
-  Future<DayForecast> getDayForecast(String cityName, int days) async {
+  Future<Forecast> getForecast(String cityName, int days) async {
     final response = await http
         .get(Uri.parse('$BASE_URL/forecast.json?key=$apiKey&q=$cityName&days=$days&aqi=no&alerts=no'));
 
     if (response.statusCode == 200) {
-      return DayForecast.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
-    } else {
-      throw Exception("Failed to load weather data: ${response.statusCode}");
-    }
-  }
-
-  Future<WeekForecast> getWeekForecast(String cityName) async {
-    final response = await http
-        .get(Uri.parse('$BASE_URL/marine.json?key=$apiKey&q=$cityName&days=7'));
-
-    if (response.statusCode == 200) {
-      return WeekForecast.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+      return Forecast.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     } else {
       throw Exception("Failed to load weather data: ${response.statusCode}");
     }

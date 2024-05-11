@@ -1,16 +1,16 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:weather_x/models/maps.dart';
 import 'package:weather_x/models/weather_model.dart';
-import 'package:weather_x/services/weather_service.dart';
 import 'dart:math' as math;
 
 class ForecastPage extends StatefulWidget {
   final Weather weather;
-  final DayForecast dayForecast;
-  final DayForecast weekForecast;
+  final Forecast dayForecast;
+  final Forecast weekForecast;
 
   const ForecastPage({
     super.key,
@@ -24,28 +24,8 @@ class ForecastPage extends StatefulWidget {
 }
 
 class _ForecastPageState extends State<ForecastPage> {
-  // final _weatherService = WeatherService('8dd69690f06a475c9d4120011240905');
-  // Weather? _weather;
-  // DayForecast? _dayForecast;
-  // DayForecast? _weekForecast;
-  // RegExp dirExp = RegExp(r"[^А-Я]+");
-  //
-  // _fetchWeather() async {
-  //   try {
-  //     String cityName = await _weatherService.getCurrentCity();
-  //     final weather = await _weatherService.getCurrentWeather(cityName);
-  //     final dayForecast = await _weatherService.getDayForecast(cityName, 1);
-  //     final weekForecast = await _weatherService.getDayForecast(cityName, 7);
-  //     setState(() {
-  //       _weather = weather;
-  //       _dayForecast = dayForecast;
-  //       _weekForecast = weekForecast;
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
   RegExp dirExp = RegExp(r"[^А-Я]+");
+  int _current = 0;
 
   @override
   void initState() {
@@ -60,6 +40,7 @@ class _ForecastPageState extends State<ForecastPage> {
         body: ListView(
           children: [
             _currentWeatherSection(),
+            const SizedBox(height: 40),
             _dayForecastSelection(),
             _weekForecastSelection()
           ],
@@ -106,13 +87,26 @@ class _ForecastPageState extends State<ForecastPage> {
                       width: 120,
                     ),
                   ),
-                  Text(
-                    '${widget.weather.temperatureC.toString()}°C',
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${widget.weather.temperatureC.toString()}°C',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Ощущается как ${widget.weather.feels_like}°',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20
+                        ),
+                      )
+                    ],
                   )
+
                 ],
               )
             ],
@@ -229,7 +223,25 @@ class _ForecastPageState extends State<ForecastPage> {
               ],
             ),
           )
-        ], options: CarouselOptions(viewportFraction: 1)),
+        ],
+            options: CarouselOptions(
+              viewportFraction: 1,
+              initialPage: 0,
+              scrollDirection: Axis.horizontal,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
+              }
+            )
+        ),
+        Center(
+            child: DotsIndicator(
+              dotsCount: 2,
+              position: _current,
+              decorator: DotsDecorator(activeColor: Colors.orangeAccent),
+            )
+        )
       ],
     );
   }

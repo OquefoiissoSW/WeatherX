@@ -20,15 +20,15 @@ class _LoadingState extends State<LoadingPage> {
   final _weatherService = WeatherService('8dd69690f06a475c9d4120011240905');
 
   late Weather _weather;
-  late DayForecast _dayForecast;
-  late DayForecast _weekForecast;
+  late Forecast _dayForecast;
+  late Forecast _weekForecast;
 
   _fetchWeather(BuildContext context) async {
     try {
       String cityName = await _weatherService.getCurrentCity();
       final weather = await _weatherService.getCurrentWeather(cityName);
-      final dayForecast = await _weatherService.getDayForecast(cityName, 1);
-      final weekForecast = await _weatherService.getDayForecast(cityName, 7);
+      final dayForecast = await _weatherService.getForecast(cityName, 1);
+      final weekForecast = await _weatherService.getForecast(cityName, 7);
       setState(() {
         _weather = weather;
         _dayForecast = dayForecast;
@@ -62,7 +62,7 @@ class _LoadingState extends State<LoadingPage> {
             Center(
                 child: Lottie.asset('assets/cloud.json',
                     width: 120, height: 120)),
-            Center(
+            const Center(
               child: Text(
                 "Loading..",
                 style: TextStyle(fontSize: 32),
