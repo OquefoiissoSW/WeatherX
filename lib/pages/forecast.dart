@@ -315,7 +315,7 @@ class _ForecastPageState extends State<ForecastPage> {
             separatorBuilder: (context, index) => const SizedBox(
               width: 20,
             ),
-            itemCount: 7,
+            itemCount: 8,
             scrollDirection: Axis.horizontal,
           ),
         )
