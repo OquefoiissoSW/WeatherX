@@ -38,3 +38,39 @@ class Weather {
     );
   }
 }
+
+class DayForecast {
+  final dynamic forecastsByHour;
+
+  DayForecast({required this.forecastsByHour});
+
+  factory DayForecast.fromJson(Map<String, dynamic> json) {
+    return DayForecast(
+        forecastsByHour: json['forecast']['forecastday'][0]['hour']
+    );
+  }
+}
+
+class WeekForecast {
+  final dynamic forecastByDay;
+
+  WeekForecast({required this.forecastByDay});
+
+  factory WeekForecast.fromJson(Map<String, dynamic> json) {
+    return WeekForecast(
+        forecastByDay: json['forecast']['forecastday']
+    );
+  }
+}
+
+class HourForecast {
+  final double temperatureC;
+  final double wind_speed;
+  final String wind_direction;
+
+  HourForecast ({
+    required this.temperatureC,
+    required this.wind_speed,
+    required this.wind_direction
+  });
+}
