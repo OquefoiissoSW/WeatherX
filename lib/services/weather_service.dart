@@ -23,9 +23,9 @@ class WeatherService {
     }
   }
 
-  Future<DayForecast> getDayForecast(String cityName) async {
+  Future<DayForecast> getDayForecast(String cityName, int days) async {
     final response = await http
-        .get(Uri.parse('$BASE_URL/forecast.json?key=$apiKey&q=$cityName&days=1&aqi=no&alerts=no'));
+        .get(Uri.parse('$BASE_URL/forecast.json?key=$apiKey&q=$cityName&days=$days&aqi=no&alerts=no'));
 
     if (response.statusCode == 200) {
       return DayForecast.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));

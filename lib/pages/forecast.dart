@@ -18,20 +18,19 @@ class _ForecastPageState extends State<ForecastPage> {
   final _weatherService = WeatherService('8dd69690f06a475c9d4120011240905');
   Weather? _weather;
   DayForecast? _dayForecast;
-  WeekForecast? _weekForecast;
+  DayForecast? _weekForecast;
   RegExp dirExp = RegExp(r"[^А-Я]+");
 
   _fetchWeather() async {
     try {
       String cityName = await _weatherService.getCurrentCity();
       final weather = await _weatherService.getCurrentWeather(cityName);
-      final dayForecast = await _weatherService.getDayForecast(cityName);
-      final weekForecast = await _weatherService.getWeekForecast(cityName);
+      final dayForecast = await _weatherService.getDayForecast(cityName, 1);
+      final weekForecast = await _weatherService.getDayForecast(cityName, 7);
       setState(() {
         _weather = weather;
         _dayForecast = dayForecast;
         _weekForecast = weekForecast;
-        print(_weekForecast?.forecastByDay[0]['day']['maxtemp_c']);
       });
     } catch (e) {
       print(e);
@@ -49,7 +48,11 @@ class _ForecastPageState extends State<ForecastPage> {
     return Scaffold(
         appBar: appBar(),
         body: ListView(
-          children: [_currentWeatherSection(), _dayForecastSelection(), _weekForecastSelection()],
+          children: [
+            _currentWeatherSection(),
+            _dayForecastSelection(),
+            _weekForecastSelection()
+          ],
         ));
   }
 
@@ -250,18 +253,20 @@ class _ForecastPageState extends State<ForecastPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${_dayForecast?.forecastsByHour[index * 3]['temp_c']}°C',
+                          '${_dayForecast?.forecastsByHour[0]['hour'][index * 3]['temp_c']}°C',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         Image.asset(
-                          'assets/icons/condition/condition_${_dayForecast?.forecastsByHour[index * 3]["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
+                          'assets/icons/condition/condition_${_dayForecast?.forecastsByHour[0]['hour'][index * 3]["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
                           height: 25,
                           width: 25,
                           color: Colors.white,
                         ),
                         Transform.rotate(
-                          angle: (directionsAngle[_dayForecast
-                                  ?.forecastsByHour[index * 3]['wind_dir']] ?? 0) *
+                          angle: (directionsAngle[
+                                      _dayForecast?.forecastsByHour[0]['hour']
+                                          [index * 3]['wind_dir']] ??
+                                  0) *
                               math.pi /
                               180,
                           child: Icon(Icons.arrow_forward),
@@ -270,18 +275,18 @@ class _ForecastPageState extends State<ForecastPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                                '${_dayForecast?.forecastsByHour[index * 3]['wind_kph']}'),
+                                '${((_dayForecast?.forecastsByHour[0]['hour'][index * 3]['wind_kph'] ?? 0) / 3.6).toStringAsFixed(2)}'),
                             const SizedBox(
                               width: 5,
                             ),
                             Text(
-                                '${directions[_dayForecast?.forecastsByHour[index * 3]['wind_dir']]?.replaceAll(dirExp, '')}')
+                                '${directions[_dayForecast?.forecastsByHour[0]['hour'][index * 3]['wind_dir']]?.replaceAll(dirExp, '')}')
                           ],
                         )
                       ],
                     ),
                   ),
-                  Text('${index*3}:00')
+                  Text('${index * 3}:00')
                 ],
               );
             },
@@ -296,7 +301,7 @@ class _ForecastPageState extends State<ForecastPage> {
     );
   }
 
-  Column _weekForecastSelection(){
+  Column _weekForecastSelection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -325,45 +330,32 @@ class _ForecastPageState extends State<ForecastPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${_dayForecast?.forecastsByHour[index * 3]['temp_c']}°C',
+                          '${_weekForecast?.forecastsByHour[index]['day']['maxtemp_c']}°C',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         Image.asset(
-                          'assets/icons/condition/condition_${_dayForecast?.forecastsByHour[index * 3]["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
+                          'assets/icons/condition/condition_${_weekForecast?.forecastsByHour[index]['day']["condition"]["text"].toLowerCase().trim().replaceAll(RegExp(' '), '_') ?? "clear"}.png',
                           height: 25,
                           width: 25,
                           color: Colors.white,
                         ),
-                        Transform.rotate(
-                          angle: (directionsAngle[_dayForecast
-                              ?.forecastsByHour[index * 3]['wind_dir']] ?? 0) *
-                              math.pi /
-                              180,
-                          child: Icon(Icons.arrow_forward),
+                        Text(
+                          '${_weekForecast?.forecastsByHour[index]['day']['mintemp_c']}°C',
+                          style: TextStyle(color: Colors.black, fontSize: 18),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                                '${_dayForecast?.forecastsByHour[index * 3]['wind_kph']}'),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                                '${directions[_dayForecast?.forecastsByHour[index * 3]['wind_dir']]?.replaceAll(dirExp, '')}')
-                          ],
-                        )
+                        Text(
+                            '${((_weekForecast?.forecastsByHour[index]['day']['maxwind_kph'] ?? 0) / 3.6).toStringAsFixed(2)}м/c'
+                        ),
                       ],
                     ),
                   ),
-                  Text('${index*3}:00')
                 ],
               );
             },
             separatorBuilder: (context, index) => const SizedBox(
               width: 20,
             ),
-            itemCount: 7,
+            itemCount: 6,
             scrollDirection: Axis.horizontal,
           ),
         )

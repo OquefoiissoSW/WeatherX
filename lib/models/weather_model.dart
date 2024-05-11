@@ -46,7 +46,7 @@ class DayForecast {
 
   factory DayForecast.fromJson(Map<String, dynamic> json) {
     return DayForecast(
-        forecastsByHour: json['forecast']['forecastday'][0]['hour']
+        forecastsByHour: json['forecast']['forecastday']
     );
   }
 }
